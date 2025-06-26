@@ -38,7 +38,6 @@ export const useSupabase = () => {
 
     const playerSubscription = supabaseService.subscribeToPlayerUpdates(
       async (updatedPlayer) => {
-        // 🔥 REFRESH WHOLE LEADERBOARD on any player change - TRUE REALTIME!
         try {
           const freshLeaderboard = await supabaseService.getLeaderboard(10);
           setPlayers(freshLeaderboard);
@@ -70,11 +69,9 @@ export const useSupabase = () => {
       const player = await supabaseService.createOrGetPlayer(name);
       setCurrentPlayer(player);
 
-      // Ensure player is in leaderboard (for new players or if not loaded yet)
       setPlayers((prev) => {
         const existingIndex = prev.findIndex((p) => p.id === player.id);
         if (existingIndex >= 0) {
-          // Update existing player
           const updated = [...prev];
           updated[existingIndex] = player;
           return updated.sort((a, b) => {
@@ -83,7 +80,6 @@ export const useSupabase = () => {
             return b.total_points - a.total_points;
           });
         } else {
-          // Add new player and sort
           const newList = [...prev, player];
           return newList.sort((a, b) => {
             if (b.best_score !== a.best_score)
@@ -120,7 +116,6 @@ export const useSupabase = () => {
 
       showToast("💾 Game saved!", "success");
 
-      // 🔥 REFRESH LEADERBOARD after OUR game only!
       try {
         const freshLeaderboard = await supabaseService.getLeaderboard(10);
         setPlayers(freshLeaderboard);

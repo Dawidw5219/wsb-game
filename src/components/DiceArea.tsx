@@ -140,5 +140,3 @@ export const DiceArea = ({
     </Card>
   );
 };
-
-//22
