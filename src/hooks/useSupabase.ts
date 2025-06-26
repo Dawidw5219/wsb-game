@@ -101,7 +101,32 @@ export const useSupabase = () => {
     try {
       const player = await supabaseService.createOrGetPlayer(name);
       setCurrentPlayer(player);
-      console.log("👤 Player set, realtime will handle updates");
+      console.log("👤 Player set:", player);
+
+      // Ensure player is in leaderboard (for new players or if not loaded yet)
+      setPlayers((prev) => {
+        const existingIndex = prev.findIndex((p) => p.id === player.id);
+        if (existingIndex >= 0) {
+          // Update existing player
+          const updated = [...prev];
+          updated[existingIndex] = player;
+          return updated.sort((a, b) => {
+            if (b.best_score !== a.best_score)
+              return b.best_score - a.best_score;
+            return b.total_points - a.total_points;
+          });
+        } else {
+          // Add new player and sort
+          const newList = [...prev, player];
+          return newList.sort((a, b) => {
+            if (b.best_score !== a.best_score)
+              return b.best_score - a.best_score;
+            return b.total_points - a.total_points;
+          });
+        }
+      });
+
+      console.log("👤 Player added to leaderboard state");
       return player;
     } catch (error) {
       console.error("💣 Error creating/getting player:", error);
