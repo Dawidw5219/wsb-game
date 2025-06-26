@@ -485,6 +485,6 @@ body {
   }
 }
 
-button:not(:disabled):hover {
+button:hover {
   cursor: pointer;
 }
