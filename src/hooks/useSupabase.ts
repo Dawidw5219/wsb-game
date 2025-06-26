@@ -37,20 +37,14 @@ export const useSupabase = () => {
     });
 
     const playerSubscription = supabaseService.subscribeToPlayerUpdates(
-      (updatedPlayer) => {
-        setPlayers((prev) => {
-          const updated = prev.map((p) =>
-            p.id === updatedPlayer.id ? updatedPlayer : p
-          );
-
-          const sorted = updated.sort((a, b) => {
-            if (b.best_score !== a.best_score)
-              return b.best_score - a.best_score;
-            return b.total_points - a.total_points;
-          });
-
-          return sorted;
-        });
+      async (updatedPlayer) => {
+        // 🔥 REFRESH WHOLE LEADERBOARD on any player change - TRUE REALTIME!
+        try {
+          const freshLeaderboard = await supabaseService.getLeaderboard(10);
+          setPlayers(freshLeaderboard);
+        } catch (error) {
+          console.error("💣 Error refreshing leaderboard:", error);
+        }
 
         setCurrentPlayer((prev) => {
           if (prev && prev.id === updatedPlayer.id) {
@@ -125,6 +119,14 @@ export const useSupabase = () => {
       );
 
       showToast("💾 Game saved!", "success");
+
+      // 🔥 REFRESH LEADERBOARD after OUR game only!
+      try {
+        const freshLeaderboard = await supabaseService.getLeaderboard(10);
+        setPlayers(freshLeaderboard);
+      } catch (error) {
+        console.error("💣 Error refreshing leaderboard:", error);
+      }
 
       return game;
     } catch (error) {
