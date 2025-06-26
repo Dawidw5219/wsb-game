@@ -264,9 +264,12 @@ class SupabaseService {
           table: "players",
         },
         (payload) => {
-          console.log("📊 Player updated!", payload);
+          console.log("📊 Player updated via realtime!", payload);
+          console.log("📊 Old player data:", payload.old);
+          console.log("📊 New player data:", payload.new);
           try {
             onPlayerUpdate(payload.new as Player);
+            console.log("📊 Player update callback executed successfully");
           } catch (error) {
             console.error("💣 Error processing player update:", error);
           }
@@ -274,11 +277,15 @@ class SupabaseService {
       )
       .subscribe((status, err) => {
         console.log("🔌 Players subscription status:", status);
+        if (status === "SUBSCRIBED") {
+          console.log("✅ Successfully subscribed to player updates!");
+        }
         if (err) {
           console.error("💣 Players subscription error:", err);
         }
       });
 
+    console.log("📊 Player subscription created:", subscription);
     return subscription;
   }
 

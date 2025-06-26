@@ -129,8 +129,17 @@ export const useSupabase = () => {
         playerWins
       );
 
-      console.log("✅ Game saved - realtime will update UI automatically");
+      console.log("✅ Game saved - refreshing leaderboard to ensure updates");
       showToast("💾 Game saved!", "success");
+
+      // Force refresh leaderboard after game save to ensure realtime updates
+      try {
+        const updatedLeaderboard = await supabaseService.getLeaderboard(10);
+        setPlayers(updatedLeaderboard);
+        console.log("🏆 Leaderboard force-refreshed after game save");
+      } catch (error) {
+        console.error("⚠️ Failed to refresh leaderboard:", error);
+      }
 
       return game;
     } catch (error) {
