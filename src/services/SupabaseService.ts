@@ -142,6 +142,20 @@ class SupabaseService {
     const newTotalPoints = player.total_points + score;
     const newBestScore = Math.max(player.best_score, score);
 
+    console.log("📊 BEFORE UPDATE - Player stats:", {
+      id: playerId,
+      oldStats: {
+        total_games: player.total_games,
+        total_points: player.total_points,
+        best_score: player.best_score,
+      },
+      newStats: {
+        total_games: newTotalGames,
+        total_points: newTotalPoints,
+        best_score: newBestScore,
+      },
+    });
+
     const { error: updateError } = await supabase
       .from("players")
       .update({
@@ -157,7 +171,10 @@ class SupabaseService {
       throw updateError;
     }
 
-    console.log("✅ Player stats updated successfully");
+    console.log(
+      "✅ Player stats updated successfully - SHOULD TRIGGER REALTIME EVENT!"
+    );
+    console.log("📊 AFTER UPDATE - Expecting realtime notification...");
   }
 
   async getLeaderboard(limit: number = 10): Promise<Player[]> {

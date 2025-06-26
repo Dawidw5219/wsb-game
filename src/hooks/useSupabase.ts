@@ -44,6 +44,7 @@ export const useSupabase = () => {
   const setupRealTimeSubscriptions = useCallback(() => {
     console.log("🔌 Setting up real-time subscriptions");
 
+    console.log("🎮 Creating games subscription...");
     const gameSubscription = supabaseService.subscribeToNewGames((newGame) => {
       console.log("🔥 New game received via real-time:", newGame);
 
@@ -64,29 +65,36 @@ export const useSupabase = () => {
       }
     });
 
+    console.log("📊 Creating player updates subscription...");
     const playerSubscription = supabaseService.subscribeToPlayerUpdates(
       (updatedPlayer) => {
         console.log("📊 Player updated via real-time:", updatedPlayer);
 
         setPlayers((prev) => {
+          console.log("📊 Updating players in state - OLD:", prev);
           const updated = prev.map((p) =>
             p.id === updatedPlayer.id ? updatedPlayer : p
           );
 
-          return updated.sort((a, b) => {
+          const sorted = updated.sort((a, b) => {
             if (b.best_score !== a.best_score)
               return b.best_score - a.best_score;
             return b.total_points - a.total_points;
           });
+
+          console.log("📊 Updating players in state - NEW:", sorted);
+          return sorted;
         });
 
         if (currentPlayer && currentPlayer.id === updatedPlayer.id) {
+          console.log("📊 Updating current player state:", updatedPlayer);
           setCurrentPlayer(updatedPlayer);
         }
       }
     );
 
     subscriptionsRef.current = [gameSubscription, playerSubscription];
+    console.log("🔌 Both subscriptions created:", subscriptionsRef.current);
   }, [currentPlayer, showToast, playSound]);
 
   const cleanup = useCallback(() => {
@@ -154,17 +162,8 @@ export const useSupabase = () => {
         playerWins
       );
 
-      console.log("✅ Game saved - refreshing leaderboard to ensure updates");
+      console.log("✅ Game saved - waiting for realtime player update...");
       showToast("💾 Game saved!", "success");
-
-      // Force refresh leaderboard after game save to ensure realtime updates
-      try {
-        const updatedLeaderboard = await supabaseService.getLeaderboard(10);
-        setPlayers(updatedLeaderboard);
-        console.log("🏆 Leaderboard force-refreshed after game save");
-      } catch (error) {
-        console.error("⚠️ Failed to refresh leaderboard:", error);
-      }
 
       return game;
     } catch (error) {

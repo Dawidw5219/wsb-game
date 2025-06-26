@@ -31,7 +31,6 @@ export const GameLeaderboard = ({
           <h2 className="text-lg sm:text-xl font-bold text-cyan-400 text-center font-mono">
             🏆 GLOBAL LEADERBOARD
           </h2>
-          <div className="text-xs text-cyan-400/60 font-mono">🔥 REALTIME</div>
         </div>
 
         {initializing ? (
@@ -92,7 +91,6 @@ export const GameLeaderboard = ({
           <h3 className="text-base sm:text-lg font-bold text-red-400 font-mono">
             🔥 RECENT BATTLES
           </h3>
-          <div className="text-xs text-red-400/60 font-mono">🔥 LIVE</div>
         </div>
 
         {initializing ? (
