@@ -66,33 +66,20 @@ export default function DiceGame() {
     )
       return;
 
-    console.log("Player rolling dice:", { currentDice: playerRolls.length });
-
     playSound("click");
     setGamePhase("PLAYER_ROLLING");
   };
 
   const handleRollComplete = (roll: number) => {
-    console.log("🎲 Universal handleRollComplete called:", {
-      roll,
-      gamePhase,
-      playerRollsLength: playerRolls.length,
-      opponentRollsLength: opponentRolls.length,
-      timestamp: Date.now(),
-    });
-
     if (gamePhase === "PLAYER_ROLLING") {
       if (playerRollInProgress.current) {
-        console.log("🚫 Player roll already in progress, ignoring duplicate");
         return;
       }
 
       if (playerRolls.length >= 5) {
-        console.log("🚫 Player already has 5 dice, ignoring");
         return;
       }
 
-      console.log("✅ Processing player roll");
       playerRollInProgress.current = true;
       setDiceCallbackEnabled(false);
 
@@ -117,66 +104,40 @@ export default function DiceGame() {
       setCurrentComputerRoll(null);
       computerRollInProgress.current = false;
 
-      console.log("Computer rolled:", {
-        computerDice: newOpponentRolls.length,
-        playerDice: playerRolls.length,
-        shouldEndGame:
-          newOpponentRolls.length === 5 && playerRolls.length === 5,
-      });
-
       if (newOpponentRolls.length === 5 && playerRolls.length === 5) {
-        console.log("ENDING GAME - both have 5 dice");
-
         setTimeout(() => {
           executeGame(playerRolls, newOpponentRolls);
         }, 1000);
       } else {
-        console.log("Continuing game - next player turn");
-
         setTimeout(() => {
           setGamePhase("PLAYER_TURN");
           setDiceCallbackEnabled(true);
         }, 800);
       }
-    } else {
-      console.log("🚫 Roll complete called during wrong phase:", gamePhase);
     }
   };
 
   const rollComputerDice = async (
     currentPlayerDiceCount: number = playerRolls.length
   ) => {
-    console.log("🔍 rollComputerDice called:", {
-      currentPlayerDiceCount,
-      computerRollInProgress: computerRollInProgress.current,
-      opponentRollsLength: opponentRolls.length,
-      gamePhase,
-      isComputerRolling: gamePhase === "COMPUTER_ROLLING",
-    });
-
     if (computerRollInProgress.current) {
-      console.log("🚫 Computer roll already in progress, ignoring duplicate");
       return;
     }
 
     if (opponentRolls.length >= 5) {
-      console.log("🚫 Computer already has 5 dice, ignoring");
       return;
     }
 
     if (gamePhase === "COMPUTER_ROLLING") {
-      console.log("🚫 Computer already rolling, ignoring duplicate");
       return;
     }
 
     if (opponentRolls.length >= currentPlayerDiceCount) {
-      console.log("🚫 Computer already rolled for this round, ignoring");
       return;
     }
 
     const currentOpponentDiceCount = opponentRolls.length;
 
-    console.log("✅ Setting computerRollInProgress to true");
     computerRollInProgress.current = true;
 
     const roll = Math.floor(Math.random() * 6) + 1;
@@ -184,12 +145,6 @@ export default function DiceGame() {
 
     setCurrentComputerRoll(roll);
     setGamePhase("COMPUTER_ROLLING");
-
-    console.log("Computer dice animation starting:", {
-      dice: diceNumber,
-      roll: roll,
-      currentOpponentDiceCount,
-    });
   };
 
   const executeGame = async (
@@ -244,8 +199,6 @@ export default function DiceGame() {
         "error"
       );
     }
-
-    console.log("✅ Game completed - realtime will update UI automatically");
   };
 
   const tryAgain = () => {

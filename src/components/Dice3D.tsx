@@ -20,36 +20,20 @@ export default function Dice3D({
   useEffect(() => {
     if (isRolling || autoRoll) {
       rollCompletedRef.current = false;
-      console.log("🔄 Reset rollCompletedRef for new roll");
     }
   }, [isRolling, autoRoll]);
 
   useEffect(() => {
-    console.log("🔄 Dice3D useEffect triggered:", {
-      isRolling,
-      autoRoll,
-      shouldRoll,
-      glowColor,
-      hasOnRollComplete: !!onRollComplete,
-      timestamp: Date.now(),
-    });
-
     if (
       (isRolling || autoRoll) &&
       diceRef.current &&
       !shouldRoll &&
       !rollCompletedRef.current
     ) {
-      console.log("🎯 Starting dice roll animation:", {
-        isRolling,
-        autoRoll,
-        glowColor,
-      });
       setShouldRoll(true);
 
       setTimeout(() => {
         if (diceRef.current?.rollDice) {
-          console.log("🎲 Calling rollDice() method");
           diceRef.current.rollDice();
         }
       }, 100);
@@ -58,29 +42,12 @@ export default function Dice3D({
 
   const handleRoll = useCallback(
     (rolledValue: number) => {
-      console.log("🎲 Dice3D handleRoll called:", {
-        rolledValue,
-        value,
-        hasOnRollComplete: !!onRollComplete,
-        glowColor,
-        rollCompleted: rollCompletedRef.current,
-        timestamp: Date.now(),
-      });
-
       if (rollCompletedRef.current) {
-        console.log("🚫 Roll already completed, ignoring duplicate callback");
         return;
       }
 
       setShouldRoll(false);
       rollCompletedRef.current = true;
-
-      if (onRollComplete) {
-        console.log("✅ Calling onRollComplete with:", rolledValue);
-        onRollComplete(rolledValue);
-      } else {
-        console.log("🚫 onRollComplete not defined, skipping");
-      }
     },
     [value, onRollComplete, glowColor]
   );

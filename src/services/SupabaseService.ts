@@ -35,8 +35,6 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 class SupabaseService {
   async createOrGetPlayer(name: string): Promise<Player> {
-    console.log("🔍 Creating or getting player:", name);
-
     const { data: existingPlayer, error: fetchError } = await supabase
       .from("players")
       .select("*")
@@ -44,7 +42,6 @@ class SupabaseService {
       .single();
 
     if (existingPlayer && !fetchError) {
-      console.log("✅ Found existing player:", existingPlayer);
       return existingPlayer;
     }
 
@@ -66,7 +63,6 @@ class SupabaseService {
       throw createError;
     }
 
-    console.log("🎉 Created new player:", newPlayer);
     return newPlayer!;
   }
 
@@ -76,13 +72,6 @@ class SupabaseService {
     computerRolls: number[],
     playerWins: boolean
   ): Promise<Game> {
-    console.log("💾 Saving game:", {
-      playerId,
-      playerRolls,
-      computerRolls,
-      playerWins,
-    });
-
     const playerScore = playerRolls.reduce((a, b) => a + b, 0);
     const computerScore = computerRolls.reduce((a, b) => a + b, 0);
     const winner =
@@ -116,7 +105,6 @@ class SupabaseService {
 
     await this.updatePlayerStats(playerId, playerScore, playerWins);
 
-    console.log("🎉 Game saved successfully:", game);
     return game!;
   }
 
@@ -125,8 +113,6 @@ class SupabaseService {
     score: number,
     won: boolean
   ): Promise<void> {
-    console.log("📊 Updating player stats:", { playerId, score, won });
-
     const { data: player, error: fetchError } = await supabase
       .from("players")
       .select("*")
@@ -142,20 +128,6 @@ class SupabaseService {
     const newTotalPoints = player.total_points + score;
     const newBestScore = Math.max(player.best_score, score);
 
-    console.log("📊 BEFORE UPDATE - Player stats:", {
-      id: playerId,
-      oldStats: {
-        total_games: player.total_games,
-        total_points: player.total_points,
-        best_score: player.best_score,
-      },
-      newStats: {
-        total_games: newTotalGames,
-        total_points: newTotalPoints,
-        best_score: newBestScore,
-      },
-    });
-
     const { error: updateError } = await supabase
       .from("players")
       .update({
@@ -170,16 +142,9 @@ class SupabaseService {
       console.error("💣 Error updating player stats:", updateError);
       throw updateError;
     }
-
-    console.log(
-      "✅ Player stats updated successfully - SHOULD TRIGGER REALTIME EVENT!"
-    );
-    console.log("📊 AFTER UPDATE - Expecting realtime notification...");
   }
 
   async getLeaderboard(limit: number = 10): Promise<Player[]> {
-    console.log("🏆 Fetching leaderboard, limit:", limit);
-
     const { data: players, error } = await supabase
       .from("players")
       .select("*")
@@ -192,13 +157,10 @@ class SupabaseService {
       throw error;
     }
 
-    console.log("✅ Leaderboard fetched:", players?.length, "players");
     return players || [];
   }
 
   async getRecentGames(limit: number = 5): Promise<Game[]> {
-    console.log("🎮 Fetching recent games, limit:", limit);
-
     const { data: games, error } = await supabase
       .from("games")
       .select(
@@ -216,13 +178,10 @@ class SupabaseService {
       throw error;
     }
 
-    console.log("✅ Recent games fetched:", games?.length, "games");
     return games || [];
   }
 
   subscribeToNewGames(onNewGame: (game: Game) => void) {
-    console.log("👂 Subscribing to new games");
-
     const subscription = supabase
       .channel(`public:games:${Date.now()}`)
       .on(
@@ -234,8 +193,6 @@ class SupabaseService {
           filter: "status=eq.completed",
         },
         async (payload) => {
-          console.log("🔥 New game completed!", payload);
-
           try {
             const { data: gameWithPlayer } = await supabase
               .from("games")
@@ -259,7 +216,6 @@ class SupabaseService {
         }
       )
       .subscribe((status, err) => {
-        console.log("🔌 Games subscription status:", status);
         if (err) {
           console.error("💣 Games subscription error:", err);
         }
@@ -269,8 +225,6 @@ class SupabaseService {
   }
 
   subscribeToPlayerUpdates(onPlayerUpdate: (player: Player) => void) {
-    console.log("👂 Subscribing to player updates");
-
     const subscription = supabase
       .channel(`public:players:${Date.now()}`)
       .on(
@@ -281,33 +235,23 @@ class SupabaseService {
           table: "players",
         },
         (payload) => {
-          console.log("📊 Player updated via realtime!", payload);
-          console.log("📊 Old player data:", payload.old);
-          console.log("📊 New player data:", payload.new);
           try {
             onPlayerUpdate(payload.new as Player);
-            console.log("📊 Player update callback executed successfully");
           } catch (error) {
             console.error("💣 Error processing player update:", error);
           }
         }
       )
       .subscribe((status, err) => {
-        console.log("🔌 Players subscription status:", status);
-        if (status === "SUBSCRIBED") {
-          console.log("✅ Successfully subscribed to player updates!");
-        }
         if (err) {
           console.error("💣 Players subscription error:", err);
         }
       });
 
-    console.log("📊 Player subscription created:", subscription);
     return subscription;
   }
 
   unsubscribe(subscription: RealtimeChannel) {
-    console.log("🔌 Unsubscribing from real-time updates");
     try {
       supabase.removeChannel(subscription);
     } catch (error) {

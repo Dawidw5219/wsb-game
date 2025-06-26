@@ -19,59 +19,26 @@ export const useSupabase = () => {
   const { showToast } = useToast();
   const { playSound } = useSound();
 
-  const loadInitialData = useCallback(async () => {
-    if (isInitialized.current) return;
-
-    try {
-      console.log("🔄 Loading initial data (one-time only)");
-      const [leaderboard, games] = await Promise.all([
-        supabaseService.getLeaderboard(10),
-        supabaseService.getRecentGames(5),
-      ]);
-
-      setPlayers(leaderboard);
-      setRecentGames(games);
-      isInitialized.current = true;
-      console.log("✅ Initial data loaded - now realtime only!");
-    } catch (error) {
-      console.error("💣 Error loading initial data:", error);
-      showToast("💣 Error loading data", "error");
-    } finally {
-      setInitializing(false);
-    }
-  }, [showToast]);
-
   const setupRealTimeSubscriptions = useCallback(() => {
-    console.log("🔌 Setting up real-time subscriptions");
-
-    console.log("🎮 Creating games subscription...");
     const gameSubscription = supabaseService.subscribeToNewGames((newGame) => {
-      console.log("🔥 New game received via real-time:", newGame);
-
       setRecentGames((prev) => [newGame, ...prev.slice(0, 4)]);
 
-      if (currentPlayer && newGame.player_id !== currentPlayer.id) {
-        const playerName = newGame.player?.name || "Unknown";
-        const isWin = newGame.winner === "player";
+      const playerName = newGame.player?.name || "Unknown";
+      const isWin = newGame.winner === "player";
 
-        showToast(
-          `🎮 ${playerName} ${isWin ? "WON" : "LOST"} ${
-            newGame.player_score
-          } vs ${newGame.computer_score}`,
-          isWin ? "success" : "error"
-        );
+      showToast(
+        `🎮 ${playerName} ${isWin ? "WON" : "LOST"} ${
+          newGame.player_score
+        } vs ${newGame.computer_score}`,
+        isWin ? "success" : "error"
+      );
 
-        playSound(isWin ? "win" : "lose");
-      }
+      playSound(isWin ? "win" : "lose");
     });
 
-    console.log("📊 Creating player updates subscription...");
     const playerSubscription = supabaseService.subscribeToPlayerUpdates(
       (updatedPlayer) => {
-        console.log("📊 Player updated via real-time:", updatedPlayer);
-
         setPlayers((prev) => {
-          console.log("📊 Updating players in state - OLD:", prev);
           const updated = prev.map((p) =>
             p.id === updatedPlayer.id ? updatedPlayer : p
           );
@@ -82,23 +49,22 @@ export const useSupabase = () => {
             return b.total_points - a.total_points;
           });
 
-          console.log("📊 Updating players in state - NEW:", sorted);
           return sorted;
         });
 
-        if (currentPlayer && currentPlayer.id === updatedPlayer.id) {
-          console.log("📊 Updating current player state:", updatedPlayer);
-          setCurrentPlayer(updatedPlayer);
-        }
+        setCurrentPlayer((prev) => {
+          if (prev && prev.id === updatedPlayer.id) {
+            return updatedPlayer;
+          }
+          return prev;
+        });
       }
     );
 
     subscriptionsRef.current = [gameSubscription, playerSubscription];
-    console.log("🔌 Both subscriptions created:", subscriptionsRef.current);
-  }, [currentPlayer, showToast, playSound]);
+  }, [showToast, playSound]);
 
   const cleanup = useCallback(() => {
-    console.log("🧹 Cleaning up Supabase subscriptions");
     subscriptionsRef.current.forEach((subscription) => {
       supabaseService.unsubscribe(subscription);
     });
@@ -109,7 +75,6 @@ export const useSupabase = () => {
     try {
       const player = await supabaseService.createOrGetPlayer(name);
       setCurrentPlayer(player);
-      console.log("👤 Player set:", player);
 
       // Ensure player is in leaderboard (for new players or if not loaded yet)
       setPlayers((prev) => {
@@ -134,7 +99,6 @@ export const useSupabase = () => {
         }
       });
 
-      console.log("👤 Player added to leaderboard state");
       return player;
     } catch (error) {
       console.error("💣 Error creating/getting player:", error);
@@ -162,7 +126,6 @@ export const useSupabase = () => {
         playerWins
       );
 
-      console.log("✅ Game saved - waiting for realtime player update...");
       showToast("💾 Game saved!", "success");
 
       return game;
@@ -174,18 +137,31 @@ export const useSupabase = () => {
   };
 
   useEffect(() => {
-    loadInitialData();
+    const initializeApp = async () => {
+      if (isInitialized.current) return;
+
+      try {
+        const [leaderboard, games] = await Promise.all([
+          supabaseService.getLeaderboard(10),
+          supabaseService.getRecentGames(5),
+        ]);
+
+        setPlayers(leaderboard);
+        setRecentGames(games);
+        isInitialized.current = true;
+      } catch (error) {
+        console.error("💣 Error loading initial data:", error);
+        showToast("💣 Error loading data", "error");
+      } finally {
+        setInitializing(false);
+      }
+    };
+
+    initializeApp();
     setupRealTimeSubscriptions();
 
     return cleanup;
-  }, [loadInitialData, setupRealTimeSubscriptions, cleanup]);
-
-  useEffect(() => {
-    if (currentPlayer) {
-      cleanup();
-      setupRealTimeSubscriptions();
-    }
-  }, [currentPlayer?.id, cleanup, setupRealTimeSubscriptions]);
+  }, []); // COMPLETELY EMPTY - no dependencies!
 
   return {
     players,
