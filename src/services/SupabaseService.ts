@@ -69,8 +69,7 @@ class SupabaseService {
   async saveGame(
     playerId: string,
     playerRolls: number[],
-    computerRolls: number[],
-    playerWins: boolean
+    computerRolls: number[]
   ): Promise<Game> {
     const playerScore = playerRolls.reduce((a, b) => a + b, 0);
     const computerScore = computerRolls.reduce((a, b) => a + b, 0);
@@ -103,16 +102,12 @@ class SupabaseService {
       throw gameError;
     }
 
-    await this.updatePlayerStats(playerId, playerScore, playerWins);
+    await this.updatePlayerStats(playerId, playerScore);
 
     return game!;
   }
 
-  async updatePlayerStats(
-    playerId: string,
-    score: number,
-    won: boolean
-  ): Promise<void> {
+  async updatePlayerStats(playerId: string, score: number): Promise<void> {
     const { data: player, error: fetchError } = await supabase
       .from("players")
       .select("*")

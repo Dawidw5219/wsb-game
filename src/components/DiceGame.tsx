@@ -136,8 +136,6 @@ export default function DiceGame() {
       return;
     }
 
-    const currentOpponentDiceCount = opponentRolls.length;
-
     computerRollInProgress.current = true;
 
     const roll = Math.floor(Math.random() * 6) + 1;
@@ -175,7 +173,7 @@ export default function DiceGame() {
     setIsTransitioning(false);
 
     const isWin = winner === "player";
-    await saveGame(manualRolls, opponentRollsArray, isWin);
+    await saveGame(manualRolls, opponentRollsArray);
 
     if (isWin) {
       setPlayerWins(playerWins + 1);

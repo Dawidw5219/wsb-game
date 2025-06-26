@@ -109,8 +109,7 @@ export const useSupabase = () => {
 
   const saveGame = async (
     playerRolls: number[],
-    computerRolls: number[],
-    playerWins: boolean
+    computerRolls: number[]
   ): Promise<Game | null> => {
     if (!currentPlayer) {
       console.error("💣 No current player set");
@@ -122,8 +121,7 @@ export const useSupabase = () => {
       const game = await supabaseService.saveGame(
         currentPlayer.id,
         playerRolls,
-        computerRolls,
-        playerWins
+        computerRolls
       );
 
       showToast("💾 Game saved!", "success");
@@ -161,7 +159,7 @@ export const useSupabase = () => {
     setupRealTimeSubscriptions();
 
     return cleanup;
-  }, [setupRealTimeSubscriptions, cleanup]);
+  }, [setupRealTimeSubscriptions, cleanup, showToast]);
 
   return {
     players,
