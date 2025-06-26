@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   supabaseService,
   type Player,
@@ -18,7 +18,7 @@ export const useSupabase = () => {
   const { showToast } = useToast();
   const { playSound } = useSound();
 
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       setLoading(true);
       const [leaderboard, games] = await Promise.all([
@@ -35,9 +35,9 @@ export const useSupabase = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
-  const setupRealTimeSubscriptions = () => {
+  const setupRealTimeSubscriptions = useCallback(() => {
     console.log("🔌 Setting up real-time subscriptions");
 
     const gameSubscription = supabaseService.subscribeToNewGames((newGame) => {
@@ -83,7 +83,15 @@ export const useSupabase = () => {
     );
 
     subscriptionsRef.current = [gameSubscription, playerSubscription];
-  };
+  }, [currentPlayer, showToast, playSound]);
+
+  const cleanup = useCallback(() => {
+    console.log("🧹 Cleaning up Supabase subscriptions");
+    subscriptionsRef.current.forEach((subscription) => {
+      supabaseService.unsubscribe(subscription);
+    });
+    subscriptionsRef.current = [];
+  }, []);
 
   const createOrGetPlayer = async (name: string): Promise<Player> => {
     try {
@@ -134,27 +142,19 @@ export const useSupabase = () => {
     await loadInitialData();
   };
 
-  const cleanup = () => {
-    console.log("🧹 Cleaning up Supabase subscriptions");
-    subscriptionsRef.current.forEach((subscription) => {
-      supabaseService.unsubscribe(subscription);
-    });
-    subscriptionsRef.current = [];
-  };
-
   useEffect(() => {
     loadInitialData();
     setupRealTimeSubscriptions();
 
     return cleanup;
-  }, []);
+  }, [loadInitialData, setupRealTimeSubscriptions, cleanup]);
 
   useEffect(() => {
     if (currentPlayer) {
       cleanup();
       setupRealTimeSubscriptions();
     }
-  }, [currentPlayer?.id]);
+  }, [currentPlayer?.id, cleanup, setupRealTimeSubscriptions]);
 
   return {
     players,

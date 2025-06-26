@@ -27,6 +27,18 @@ CREATE TABLE games (
 ALTER TABLE players REPLICA IDENTITY FULL;
 ALTER TABLE games REPLICA IDENTITY FULL;
 
+-- REALTIME PUBLICATIONS - TO BYŁO KURWA NAJWAŻNIEJSZE! 🔥
+BEGIN;
+-- Usuń publikację jeśli istnieje
+DROP PUBLICATION IF EXISTS supabase_realtime;
+-- Stwórz nową publikację
+CREATE PUBLICATION supabase_realtime;
+COMMIT;
+
+-- Dodaj tabele do publikacji realtime
+ALTER PUBLICATION supabase_realtime ADD TABLE players;
+ALTER PUBLICATION supabase_realtime ADD TABLE games;
+
 -- RLS (Row Level Security) - opcjonalne ale zalecane
 ALTER TABLE players ENABLE ROW LEVEL SECURITY;
 ALTER TABLE games ENABLE ROW LEVEL SECURITY;

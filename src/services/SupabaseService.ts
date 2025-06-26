@@ -207,7 +207,7 @@ class SupabaseService {
     console.log("👂 Subscribing to new games");
 
     const subscription = supabase
-      .channel("public:games")
+      .channel(`public:games:${Date.now()}`)
       .on(
         "postgres_changes",
         {
@@ -219,23 +219,34 @@ class SupabaseService {
         async (payload) => {
           console.log("🔥 New game completed!", payload);
 
-          const { data: gameWithPlayer } = await supabase
-            .from("games")
-            .select(
+          try {
+            const { data: gameWithPlayer } = await supabase
+              .from("games")
+              .select(
+                `
+                *,
+                player:players(*)
               `
-              *,
-              player:players(*)
-            `
-            )
-            .eq("id", payload.new.id)
-            .single();
+              )
+              .eq("id", payload.new.id)
+              .single();
 
-          if (gameWithPlayer) {
-            onNewGame(gameWithPlayer);
+            if (gameWithPlayer) {
+              onNewGame(gameWithPlayer);
+            } else {
+              console.warn("⚠️ Could not fetch game with player details");
+            }
+          } catch (error) {
+            console.error("💣 Error fetching game details:", error);
           }
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("🔌 Games subscription status:", status);
+        if (err) {
+          console.error("💣 Games subscription error:", err);
+        }
+      });
 
     return subscription;
   }
@@ -244,7 +255,7 @@ class SupabaseService {
     console.log("👂 Subscribing to player updates");
 
     const subscription = supabase
-      .channel("public:players")
+      .channel(`public:players:${Date.now()}`)
       .on(
         "postgres_changes",
         {
@@ -254,17 +265,30 @@ class SupabaseService {
         },
         (payload) => {
           console.log("📊 Player updated!", payload);
-          onPlayerUpdate(payload.new as Player);
+          try {
+            onPlayerUpdate(payload.new as Player);
+          } catch (error) {
+            console.error("💣 Error processing player update:", error);
+          }
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("🔌 Players subscription status:", status);
+        if (err) {
+          console.error("💣 Players subscription error:", err);
+        }
+      });
 
     return subscription;
   }
 
   unsubscribe(subscription: RealtimeChannel) {
     console.log("🔌 Unsubscribing from real-time updates");
-    supabase.removeChannel(subscription);
+    try {
+      supabase.removeChannel(subscription);
+    } catch (error) {
+      console.error("💣 Error unsubscribing:", error);
+    }
   }
 }
 
