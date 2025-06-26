@@ -7,9 +7,8 @@ export const GameLeaderboard = ({
   players,
   recentGames,
   currentPlayer,
-  loading,
+  initializing,
   onReset,
-  onRefresh,
 }: GameLeaderboardProps) => {
   const { playSound } = useSound();
 
@@ -32,22 +31,13 @@ export const GameLeaderboard = ({
           <h2 className="text-lg sm:text-xl font-bold text-cyan-400 text-center font-mono">
             🏆 GLOBAL LEADERBOARD
           </h2>
-          <Button
-            onClick={() => {
-              playSound("click");
-              onRefresh();
-            }}
-            className="p-2 bg-cyan-800/50 hover:bg-cyan-700/50 border border-cyan-400/50 text-cyan-400 text-sm"
-            disabled={loading}
-          >
-            {loading ? "⟳" : "🔄"}
-          </Button>
+          <div className="text-xs text-cyan-400/60 font-mono">🔥 REALTIME</div>
         </div>
 
-        {loading ? (
+        {initializing ? (
           <div className="text-center text-cyan-400 font-mono py-6 sm:py-8">
             <div className="animate-spin text-xl sm:text-2xl mb-2">⟳</div>
-            LOADING DATA...
+            INITIALIZING...
           </div>
         ) : (
           <div className="space-y-2 max-h-[300px] sm:max-h-[400px] overflow-y-auto">
@@ -98,14 +88,17 @@ export const GameLeaderboard = ({
       </Card>
 
       <Card className="bg-black/80 border-2 border-red-400 p-4 sm:p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(255,0,0,0.2)]">
-        <h3 className="text-base sm:text-lg font-bold text-red-400 mb-3 sm:mb-4 text-center font-mono">
-          🔥 RECENT BATTLES
-        </h3>
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
+          <h3 className="text-base sm:text-lg font-bold text-red-400 font-mono">
+            🔥 RECENT BATTLES
+          </h3>
+          <div className="text-xs text-red-400/60 font-mono">🔥 LIVE</div>
+        </div>
 
-        {loading ? (
+        {initializing ? (
           <div className="text-center text-red-400 font-mono py-4">
             <div className="animate-spin text-lg sm:text-xl mb-2">⟳</div>
-            LOADING...
+            INITIALIZING...
           </div>
         ) : (
           <div className="space-y-2 max-h-[200px] sm:max-h-[300px] overflow-y-auto">

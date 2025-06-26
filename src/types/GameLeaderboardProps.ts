@@ -4,9 +4,8 @@ export interface GameLeaderboardProps {
   players: Player[];
   recentGames: Game[];
   currentPlayer: Player | null;
-  loading: boolean;
+  initializing: boolean;
   onReset: () => void;
-  onRefresh: () => void;
 }
 
 export type { Player, Game } from "@/services/SupabaseService";

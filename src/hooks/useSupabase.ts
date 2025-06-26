@@ -11,16 +11,19 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 export const useSupabase = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [recentGames, setRecentGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
 
   const subscriptionsRef = useRef<RealtimeChannel[]>([]);
+  const isInitialized = useRef(false);
   const { showToast } = useToast();
   const { playSound } = useSound();
 
   const loadInitialData = useCallback(async () => {
+    if (isInitialized.current) return;
+
     try {
-      setLoading(true);
+      console.log("🔄 Loading initial data (one-time only)");
       const [leaderboard, games] = await Promise.all([
         supabaseService.getLeaderboard(10),
         supabaseService.getRecentGames(5),
@@ -28,12 +31,13 @@ export const useSupabase = () => {
 
       setPlayers(leaderboard);
       setRecentGames(games);
-      console.log("✅ Initial data loaded");
+      isInitialized.current = true;
+      console.log("✅ Initial data loaded - now realtime only!");
     } catch (error) {
       console.error("💣 Error loading initial data:", error);
       showToast("💣 Error loading data", "error");
     } finally {
-      setLoading(false);
+      setInitializing(false);
     }
   }, [showToast]);
 
@@ -97,9 +101,7 @@ export const useSupabase = () => {
     try {
       const player = await supabaseService.createOrGetPlayer(name);
       setCurrentPlayer(player);
-
-      await loadInitialData();
-
+      console.log("👤 Player set, realtime will handle updates");
       return player;
     } catch (error) {
       console.error("💣 Error creating/getting player:", error);
@@ -127,7 +129,7 @@ export const useSupabase = () => {
         playerWins
       );
 
-      console.log("✅ Game saved successfully");
+      console.log("✅ Game saved - realtime will update UI automatically");
       showToast("💾 Game saved!", "success");
 
       return game;
@@ -136,10 +138,6 @@ export const useSupabase = () => {
       showToast("💣 Error saving game", "error");
       return null;
     }
-  };
-
-  const refreshData = async () => {
-    await loadInitialData();
   };
 
   useEffect(() => {
@@ -159,12 +157,10 @@ export const useSupabase = () => {
   return {
     players,
     recentGames,
-    loading,
+    initializing,
     currentPlayer,
-
     createOrGetPlayer,
     saveGame,
-    refreshData,
     cleanup,
   };
 };

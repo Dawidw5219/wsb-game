@@ -486,5 +486,5 @@ body {
 }
 
 button:hover {
-  cursor: pointer;
+  cursor: pointer !important;
 }

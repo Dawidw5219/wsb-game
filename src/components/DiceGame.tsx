@@ -43,8 +43,7 @@ export default function DiceGame() {
     players,
     recentGames,
     currentPlayer,
-    loading,
-    refreshData,
+    initializing,
     createOrGetPlayer,
     saveGame,
   } = useSupabase();
@@ -246,7 +245,7 @@ export default function DiceGame() {
       );
     }
 
-    await refreshData();
+    console.log("✅ Game completed - realtime will update UI automatically");
   };
 
   const tryAgain = () => {
@@ -328,9 +327,8 @@ export default function DiceGame() {
           players={players}
           recentGames={recentGames}
           currentPlayer={currentPlayer}
-          loading={loading}
+          initializing={initializing}
           onReset={resetGame}
-          onRefresh={refreshData}
         />
       </div>
     </GameBackground>
