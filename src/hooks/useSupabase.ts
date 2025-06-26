@@ -161,7 +161,7 @@ export const useSupabase = () => {
     setupRealTimeSubscriptions();
 
     return cleanup;
-  }, []); // COMPLETELY EMPTY - no dependencies!
+  }, [setupRealTimeSubscriptions, cleanup]);
 
   return {
     players,

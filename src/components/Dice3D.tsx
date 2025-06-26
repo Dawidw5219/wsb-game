@@ -48,8 +48,12 @@ export default function Dice3D({
 
       setShouldRoll(false);
       rollCompletedRef.current = true;
+
+      if (onRollComplete) {
+        onRollComplete(rolledValue);
+      }
     },
-    [value, onRollComplete, glowColor]
+    [onRollComplete]
   );
 
   const handleClick = () => {

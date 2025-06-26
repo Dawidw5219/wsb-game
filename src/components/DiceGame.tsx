@@ -141,7 +141,6 @@ export default function DiceGame() {
     computerRollInProgress.current = true;
 
     const roll = Math.floor(Math.random() * 6) + 1;
-    const diceNumber = currentOpponentDiceCount + 1;
 
     setCurrentComputerRoll(roll);
     setGamePhase("COMPUTER_ROLLING");
