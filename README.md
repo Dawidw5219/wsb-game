@@ -8,14 +8,11 @@ https://wsb-game.vercel.app/
 
 ## Wymagania projektu
 
-Utwórz projekt który umożliwia prowadzenie prostej gry z komputerem polegającej na rzucie tradycyjną
-kostką do gry. Wygrywa ten gracz, którego suma wyrzuconych oczek w pięciu rzutach jest większa.
+Utwórz projekt który umożliwia prowadzenie prostej gry z komputerem polegającej na rzucie tradycyjną kostką do gry. Wygrywa ten gracz, którego suma wyrzuconych oczek w pięciu rzutach jest większa.
 
 Gra powinna działać w systemie rozproszonym i umożliwiać jednoczesne prowadzenie rozgrywki przez
-wielu graczy. Dodatkowo każdy z graczy powinien mieś możliwość obserwowania wyników (ilość gier, ilość
-punktów, najlepszy wynik w 5 rzutach) innych graczy.
-Wyniki powinny być aktualizowane w czasie rzeczywistym i dostępne również po ponownym przystąpieniu
-do rozgrywki.
+wielu graczy. Dodatkowo każdy z graczy powinien mieś możliwość obserwowania wyników (ilość gier, ilość punktów, najlepszy wynik w 5 rzutach) innych graczy.
+Wyniki powinny być aktualizowane w czasie rzeczywistym i dostępne również po ponownym przystąpieniu do rozgrywki.
 
 ## ⚡ Funkcjonalności
 

@@ -26,10 +26,10 @@ export const GameLeaderboard = ({
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-black/80 border-2 border-cyan-400 p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(0,255,255,0.2)]">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-cyan-400 text-center font-mono">
+    <div className="space-y-4 sm:space-y-6">
+      <Card className="bg-black/80 border-2 border-cyan-400 p-4 sm:p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(0,255,255,0.2)]">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-cyan-400 text-center font-mono">
             🏆 GLOBAL LEADERBOARD
           </h2>
           <Button
@@ -45,12 +45,12 @@ export const GameLeaderboard = ({
         </div>
 
         {loading ? (
-          <div className="text-center text-cyan-400 font-mono py-8">
-            <div className="animate-spin text-2xl mb-2">⟳</div>
+          <div className="text-center text-cyan-400 font-mono py-6 sm:py-8">
+            <div className="animate-spin text-xl sm:text-2xl mb-2">⟳</div>
             LOADING DATA...
           </div>
         ) : (
-          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+          <div className="space-y-2 max-h-[300px] sm:max-h-[400px] overflow-y-auto">
             {players.length === 0 ? (
               <div className="text-center text-gray-400 font-mono py-4">
                 No players yet. Be the first! 🎯
@@ -63,16 +63,16 @@ export const GameLeaderboard = ({
                 return (
                   <div
                     key={player.id}
-                    className={`p-3 rounded border font-mono text-sm transition-all duration-300 ${
+                    className={`p-2 sm:p-3 rounded border font-mono text-xs sm:text-sm transition-all duration-300 ${
                       isCurrentPlayer
                         ? "bg-cyan-900/50 border-cyan-400 text-cyan-300 font-bold shadow-[0_0_15px_rgba(0,255,255,0.3)]"
                         : "bg-gray-900/30 border-gray-600 text-gray-300 hover:bg-gray-800/40"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
-                      <span className="flex items-center gap-2">
-                        <span className="text-xs w-6">#{idx + 1}</span>
-                        <span className="truncate max-w-[120px]">
+                      <span className="flex items-center gap-1 sm:gap-2">
+                        <span className="text-xs w-4 sm:w-6">#{idx + 1}</span>
+                        <span className="truncate max-w-[80px] sm:max-w-[120px]">
                           {player.name}
                         </span>
                         {isCurrentPlayer && (
@@ -97,20 +97,20 @@ export const GameLeaderboard = ({
         )}
       </Card>
 
-      <Card className="bg-black/80 border-2 border-red-400 p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(255,0,0,0.2)]">
-        <h3 className="text-lg font-bold text-red-400 mb-4 text-center font-mono">
+      <Card className="bg-black/80 border-2 border-red-400 p-4 sm:p-6 backdrop-blur-sm shadow-[0_0_30px_rgba(255,0,0,0.2)]">
+        <h3 className="text-base sm:text-lg font-bold text-red-400 mb-3 sm:mb-4 text-center font-mono">
           🔥 RECENT BATTLES
         </h3>
 
         {loading ? (
           <div className="text-center text-red-400 font-mono py-4">
-            <div className="animate-spin text-xl mb-2">⟳</div>
+            <div className="animate-spin text-lg sm:text-xl mb-2">⟳</div>
             LOADING...
           </div>
         ) : (
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
+          <div className="space-y-2 max-h-[200px] sm:max-h-[300px] overflow-y-auto">
             {recentGames.length === 0 ? (
-              <div className="text-center text-gray-400 font-mono py-4 text-sm">
+              <div className="text-center text-gray-400 font-mono py-4 text-xs sm:text-sm">
                 No recent games 🎲
               </div>
             ) : (
@@ -130,20 +130,20 @@ export const GameLeaderboard = ({
                     }`}
                   >
                     <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <span
                           className={isWin ? "text-green-400" : "text-red-400"}
                         >
                           {isWin ? "🏆" : "💀"}
                         </span>
-                        <span className="truncate max-w-[80px]">
+                        <span className="truncate max-w-[60px] sm:max-w-[80px]">
                           {playerName}
                         </span>
                         {isOwnGame && <span className="text-cyan-400">👤</span>}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <span
-                          className={`font-bold ${
+                          className={`font-bold text-xs ${
                             isWin ? "text-green-400" : "text-red-400"
                           }`}
                         >
@@ -168,7 +168,7 @@ export const GameLeaderboard = ({
           onReset();
         }}
         onMouseEnter={() => playSound("hover")}
-        className="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 font-mono text-lg py-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_rgba(128,128,128,0.3)]"
+        className="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 font-mono text-base sm:text-lg py-2 sm:py-3 cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_rgba(128,128,128,0.3)]"
       >
         🔄 RESTART PROTOCOL
       </Button>

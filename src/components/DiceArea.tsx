@@ -19,9 +19,9 @@ export const DiceArea = ({
   const isRolling = gamePhase === "PLAYER_ROLLING";
 
   return (
-    <Card className="bg-black/80 border-2 border-cyan-400 p-8 backdrop-blur-sm shadow-[0_0_30px_rgba(0,255,255,0.2)] min-h-[800px]">
-      <div className="text-center space-y-8">
-        <h2 className="text-2xl font-bold font-mono">
+    <Card className="bg-black/80 border-2 border-cyan-400 p-4 sm:p-8 backdrop-blur-sm shadow-[0_0_30px_rgba(0,255,255,0.2)] min-h-[600px] sm:min-h-[800px]">
+      <div className="text-center space-y-4 sm:space-y-8">
+        <h2 className="text-lg sm:text-2xl font-bold font-mono">
           {gamePhase === "PLAYER_TURN" && (
             <span className="text-cyan-400">
               🎲 YOUR TURN - DICE {playerRolls.length + 1} OF 5
@@ -39,7 +39,7 @@ export const DiceArea = ({
           )}
         </h2>
 
-        <div className="grid grid-cols-2 gap-8 text-lg font-mono">
+        <div className="grid grid-cols-2 gap-4 sm:gap-8 text-sm sm:text-lg font-mono">
           <div className="text-cyan-300">
             <div className="font-bold">YOUR DICE: {playerRolls.length}/5</div>
             {playerRolls.length > 0 && (
@@ -58,10 +58,12 @@ export const DiceArea = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <h3 className="text-xl font-mono text-cyan-300">YOUR DICE:</h3>
-            <div className="grid grid-cols-3 gap-3 justify-items-center max-w-[300px] mx-auto">
+        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:gap-8">
+          <div className="space-y-2 sm:space-y-4">
+            <h3 className="text-base sm:text-xl font-mono text-cyan-300">
+              YOUR DICE:
+            </h3>
+            <div className="grid grid-cols-3 gap-1 sm:gap-3 justify-items-center max-w-[280px] sm:max-w-[300px] mx-auto">
               {playerRolls.map((roll, idx) => (
                 <Dice3D
                   key={`player-${idx}-${roll}`}
@@ -74,9 +76,11 @@ export const DiceArea = ({
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-xl font-mono text-red-300">PROTOCOL DICE:</h3>
-            <div className="grid grid-cols-3 gap-3 justify-items-center max-w-[300px] mx-auto">
+          <div className="space-y-2 sm:space-y-4">
+            <h3 className="text-base sm:text-xl font-mono text-red-300">
+              PROTOCOL DICE:
+            </h3>
+            <div className="grid grid-cols-3 gap-1 sm:gap-3 justify-items-center max-w-[280px] sm:max-w-[300px] mx-auto">
               {opponentRolls.map((roll, idx) => (
                 <Dice3D
                   key={`opponent-${idx}-${roll}`}
@@ -90,8 +94,8 @@ export const DiceArea = ({
           </div>
         </div>
 
-        <div className="flex justify-center py-8">
-          <div className="scale-[2.5] mt-20">
+        <div className="flex justify-center py-4 sm:py-8">
+          <div className="scale-[1.5] sm:scale-[2.5] mt-8 sm:mt-20">
             <Dice3D
               key="universal-dice"
               value={
@@ -115,12 +119,12 @@ export const DiceArea = ({
         </div>
 
         {gamePhase === "PLAYER_TURN" && diceCallbackEnabled && (
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center w-full px-4">
             <Button
               onClick={onRoll}
               onMouseEnter={() => playSound("hover")}
               disabled={isRolling || playerRolls.length >= 5}
-              className="w-auto min-w-[300px] max-w-[400px] bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-mono text-xl py-4 px-6 rounded-lg border-0 shadow-[0_0_20px_rgba(0,255,255,0.4)] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-20 mb-10"
+              className="w-full sm:w-auto sm:min-w-[300px] sm:max-w-[400px] bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-mono text-lg sm:text-xl py-3 sm:py-4 px-4 sm:px-6 rounded-lg border-0 shadow-[0_0_20px_rgba(0,255,255,0.4)] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-8 sm:mt-20 mb-4 sm:mb-10"
             >
               {isRolling ? <>ROLLING...</> : <>🎲 ROLL DICE</>}
             </Button>
@@ -128,7 +132,7 @@ export const DiceArea = ({
         )}
 
         {gamePhase === "COMPUTER_ROLLING" && (
-          <div className="text-2xl font-mono text-red-400 mt-20">
+          <div className="text-lg sm:text-2xl font-mono text-red-400 mt-8 sm:mt-20">
             🤖 PROTOCOL PROCESSING...
           </div>
         )}

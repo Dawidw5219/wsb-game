@@ -457,3 +457,34 @@ body {
   text-shadow: 0 0 20px #ff0000;
   animation: pulse-danger 1s infinite, text-corruption 3s infinite;
 }
+
+/* MOBILE RESPONSIVE STYLES */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .mobile-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* MOBILE DICE ADJUSTMENTS */
+@media (max-width: 640px) {
+  .dice-container {
+    transform: scale(0.8);
+  }
+
+  .main-dice {
+    transform: scale(1.2) !important;
+  }
+}
+
+button:not(:disabled):hover {
+  cursor: pointer;
+}

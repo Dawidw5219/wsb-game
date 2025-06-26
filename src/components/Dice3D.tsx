@@ -118,7 +118,7 @@ export default function Dice3D({
           ref={diceRef}
           onRoll={handleRoll}
           rollingTime={1200}
-          size={80}
+          size={window.innerWidth < 640 ? 65 : 80}
           defaultValue={
             value
               ? (Math.max(1, Math.min(6, value)) as 1 | 2 | 3 | 4 | 5 | 6)

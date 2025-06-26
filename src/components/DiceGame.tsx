@@ -290,13 +290,13 @@ export default function DiceGame() {
     <GameBackground>
       <TransitionOverlay isVisible={isTransitioning} />
 
-      <div className="container mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-screen relative z-10">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="text-center py-4">
-            <h1 className="text-3xl font-bold font-mono text-cyan-400 mb-2">
+      <div className="container mx-auto p-2 sm:p-4 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 min-h-screen relative z-10">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="text-center py-2 sm:py-4">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-mono text-cyan-400 mb-2">
               🎯 {playerName.toUpperCase()} VS PROTOCOL 🎯
             </h1>
-            <div className="text-lg text-cyan-300">
+            <div className="text-sm sm:text-base lg:text-lg text-cyan-300">
               SESSION: W:{playerWins} L:{playerLosses}
             </div>
           </div>
