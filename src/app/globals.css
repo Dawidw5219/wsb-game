@@ -1,0 +1,459 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+}
+
+@keyframes blood-drip {
+  0% {
+    transform: translateY(-100vh) scaleY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    transform: translateY(100vh) scaleY(3);
+    opacity: 0;
+  }
+}
+
+@keyframes death-glitch {
+  0%,
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  10% {
+    transform: translate(-5px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  20% {
+    transform: translate(3px, -3px);
+    filter: hue-rotate(180deg);
+  }
+  30% {
+    transform: translate(-2px, 4px);
+    filter: hue-rotate(270deg);
+  }
+  40% {
+    transform: translate(4px, -1px);
+    filter: hue-rotate(360deg);
+  }
+  50% {
+    transform: translate(-3px, -2px);
+    filter: hue-rotate(450deg);
+  }
+  60% {
+    transform: translate(2px, 3px);
+    filter: hue-rotate(540deg);
+  }
+  70% {
+    transform: translate(-4px, 1px);
+    filter: hue-rotate(630deg);
+  }
+  80% {
+    transform: translate(3px, -4px);
+    filter: hue-rotate(720deg);
+  }
+  90% {
+    transform: translate(-1px, 2px);
+    filter: hue-rotate(810deg);
+  }
+}
+
+@keyframes elimination-flash {
+  0%,
+  100% {
+    background: transparent;
+  }
+  50% {
+    background: radial-gradient(
+      circle,
+      rgba(255, 0, 0, 0.3) 0%,
+      transparent 70%
+    );
+  }
+}
+
+@keyframes creepy-breathing {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+@keyframes victim-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.95);
+    filter: grayscale(100%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: grayscale(100%) blur(2px);
+  }
+}
+
+@keyframes scanner-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes static-noise {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes pulse-danger {
+  0%,
+  100% {
+    box-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000;
+    border-color: #ff0000;
+  }
+  50% {
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+    border-color: #ff4444;
+  }
+}
+
+@keyframes text-corruption {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.6;
+  }
+  91% {
+    opacity: 1;
+    transform: skew(0deg);
+  }
+  92% {
+    transform: skew(5deg);
+  }
+  93% {
+    transform: skew(-5deg);
+  }
+  94% {
+    transform: skew(3deg);
+  }
+  96% {
+    transform: skew(-2deg);
+  }
+  97% {
+    transform: skew(1deg);
+  }
+  98% {
+    transform: skew(0deg);
+  }
+}
+
+.blood-drip {
+  position: absolute;
+  width: 3px;
+  height: 50px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    #8b0000 20%,
+    #660000 80%,
+    transparent
+  );
+  animation: blood-drip 8s infinite;
+  z-index: 5;
+}
+
+.blood-drip::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -2px;
+  width: 7px;
+  height: 7px;
+  background: #8b0000;
+  border-radius: 50%;
+  animation: blood-drip 8s infinite;
+}
+
+.elimination-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(45deg, #330000, #660000);
+  border: 2px solid #ff0000;
+  color: #ff0000;
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  z-index: 1000;
+  animation: elimination-flash 0.5s ease-in-out 3, death-glitch 2s ease-in-out;
+  box-shadow: 0 0 20px #ff0000, inset 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+body {
+  background: #000000;
+  color: #ff0000;
+  font-family: "Courier New", monospace;
+  overflow-x: hidden;
+}
+
+.scanner-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff0000, transparent);
+  animation: scanner-line 5s infinite;
+  z-index: 999;
+}
+
+.static-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.1"/></svg>');
+  animation: static-noise 0.1s infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.victim-list {
+  background: linear-gradient(45deg, #0a0000, #1a0000);
+  border: 1px solid #660000;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.victim-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin: 5px 0;
+  background: rgba(255, 0, 0, 0.1);
+  border-left: 3px solid #ff0000;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+.victim-eliminated {
+  animation: victim-fade 2s ease-out forwards;
+  text-decoration: line-through;
+  opacity: 0.3;
+}
+
+.victim-alive {
+  animation: creepy-breathing 3s infinite;
+}
+
+.darkweb-button {
+  background: linear-gradient(45deg, #330000, #660000);
+  border: 2px solid #ff0000;
+  color: #ff0000;
+  padding: 12px 24px;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.darkweb-button:hover {
+  background: linear-gradient(45deg, #660000, #990000);
+  box-shadow: 0 0 20px #ff0000;
+  transform: scale(1.05);
+}
+
+.darkweb-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 0, 0, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.darkweb-button:hover::before {
+  left: 100%;
+}
+
+.death-dice {
+  perspective: 1000px;
+  filter: drop-shadow(0 0 15px #ff0000);
+}
+
+.death-dice.rolling {
+  animation: death-glitch 1s infinite;
+}
+
+.darkweb-panel {
+  background: linear-gradient(45deg, rgba(10, 0, 0, 0.9), rgba(30, 0, 0, 0.9));
+  border: 1px solid #660000;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3), inset 0 0 20px rgba(255, 0, 0, 0.1);
+  animation: creepy-breathing 4s infinite;
+  backdrop-filter: blur(2px);
+}
+
+.corrupted-text {
+  animation: text-corruption 5s infinite;
+}
+
+.bloodstain {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #8b0000 30%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.bloodstain::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -3px;
+  width: 15px;
+  height: 15px;
+  background: #660000;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.elimination-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(45deg, #000000, #330000);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: elimination-flash 1s ease-in-out 5;
+}
+
+.victim-counter {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ff0000;
+  padding: 10px 15px;
+  color: #ff0000;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  z-index: 1000;
+  animation: pulse-danger 2s infinite;
+}
+
+.creepy-loader {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #330000;
+  border-top: 3px solid #ff0000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, pulse-danger 2s infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.entrance-effect {
+  animation: death-glitch 3s ease-out, elimination-flash 2s ease-in-out 3;
+}
+
+.player-status-alive {
+  color: #ff0000;
+  text-shadow: 0 0 10px #ff0000;
+}
+
+.player-status-eliminated {
+  color: #666666;
+  text-decoration: line-through;
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+.torture-chamber {
+  background: radial-gradient(ellipse at center, #1a0000 0%, #000000 100%);
+  border: 3px solid #660000;
+  box-shadow: 0 0 30px #ff0000, inset 0 0 30px rgba(255, 0, 0, 0.2);
+}
+
+.death-countdown {
+  font-size: 4rem;
+  color: #ff0000;
+  text-shadow: 0 0 20px #ff0000;
+  animation: pulse-danger 1s infinite, text-corruption 3s infinite;
+}
